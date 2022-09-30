@@ -1,0 +1,18 @@
+@startuml Authorization
+
+actor Client as client
+participant "API Gateway" as api
+participant "Account service" as account_service
+database Database as db
+database Redis as redis
+
+client -> api : sha256(e-mail:pwd)
+api -> account_service : sha256(e-mail:pwd)
+account_service -> db : Check
+db -> account_service : user_id
+account_service -> account_service : Generate session token
+account_service -> redis : Add record (token, user_id)
+account_service -> api : token
+api -> client : token
+
+@enduml

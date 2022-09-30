@@ -1,0 +1,496 @@
+openapi: '3.0.2'
+info:
+  title: board API
+  version: '1.0'
+servers:
+  - url: https://board.board.board/
+paths:
+  /registration:
+    post:
+      tags:
+        - "Sign In/Sign Up"
+      summary: Register user with email and password
+      description: Register user with email and password
+      requestBody:
+        description: Create user in DB
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+        required: true
+      responses:
+        '405':
+          description: Wrong method. Only POST allowed.
+        '200':
+          description: >
+            Successfully registered.
+            The token is returned in cookie named 'Token'. This cookie must be included in subsequent requests.
+            Secret from the body should be saved locally to be used as a salt for signing up requests.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: Token=aboba;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatedUser'
+
+  /authorization:
+    post:
+      tags:
+        - "Sign In/Sign Up"
+      description: Authenticate and authorize user
+      summary: Authenticate and authorize user
+      requestBody:
+        description: Get AuthenticatedUser
+        content:
+          application/json:
+            schema:
+              properties:
+                credentials:
+                  $ref: '#/components/schemas/Credentials'
+        required: true
+      responses:
+        '200':
+          description: >
+            Successfully authorized.
+            The token is returned in cookie named 'Token'. This cookie must be included in subsequent requests.
+            Secret from the body should be saved locally to be used as a salt for signing up requests.
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: Token=aboba;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatedUser'
+  /group-list/{user-id}:
+    get:
+      tags:
+        - "Groups and categories"
+      description: 'Returns the list of channel groups and categories for {user-id}'
+      summary: 'Returns the list of channel groups and categories for {user-id}'
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+      security:
+        - cookieTokenAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  channelGroups:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChannelGroup'
+                  groupCategories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GroupCategory'
+  /group-list/{user-id}/group:
+    post:
+      tags:
+        - "Groups and categories"
+      description: >
+        Creates a channel group for user.
+        Using ChannelGroup model with specified <b>group_name</b> and <b>channel_ids</b> fields is mandatory.
+        Optional fields are <b>group_descr</b>, <b>tags</b> and <b>category_id</b>. Specifying other fields will have no effect.
+      summary: Creates a channel group for user
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelGroup'
+      responses:
+        '200':
+          description: Returns fully filled ChannelGroup object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelGroup'
+  /group-list/{user-id}/group/{group-id}:
+    put:
+      tags:
+        - "Groups and categories"
+      description: >
+        Updates the channel group for user.
+        All fields except <b>user_id</b> and <b>group_id</b> must be specified. Failing to do so may result in data loss or request failure.
+      summary: Updates a channel group for user
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+        - in: path
+          name: group-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the channel group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelGroup'
+      responses:
+        '200':
+          description: Returns fully filled ChannelGroup object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelGroup'
+  /group-list/{user-id}/category:
+    post:
+      tags:
+        - "Groups and categories"
+      description: >
+        Creates a channel group category for user.
+        Using GroupCategory model with specified <b>category_name</b> field is mandatory.
+        Field <b>category_descr</b> is optional. Specifying other fields will have no effect.
+      summary: Creates a category for user
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCategory'
+      responses:
+        '200':
+          description: Returns fully filled GroupCategory object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCategory'
+  /group-list/{user-id}/category/{category-id}:
+    put:
+      tags:
+        - "Groups and categories"
+      description: >
+        Updates the channel group category for user.
+        All fields except <b>user_id</b> and <b>category_id</b> must be specified. Failing to do so may result in data loss or request failure.
+      summary: Updates a category for user
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+        - in: path
+          name: category-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the category
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/GroupCategory'
+      responses:
+        '200':
+          description: Returns fully filled GroupCategory object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCategory'
+  /channel-list/{user-id}:
+    get:
+      tags:
+        - "Channels"
+      summary: 'Get all channels for all linked accounts'
+      description: 'Get all channels for all linked accounts.'
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                    $ref: '#/components/schemas/TelegramChannel'
+  /messages/group/{group-id}:
+    get:
+      tags:
+        - "Messages"
+      summary: 'Get $limit (default 20) aggregated messages before a specified date'
+      description: >
+        Get $limit (default 20) aggregated messages before a specified date. Intended to be used with a date-based pagination:
+        for the first iteration use a current date, then use a date of the last message and so on.
+      parameters:
+        - in: path
+          name: group-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the group
+        - in: query
+          name: date
+          schema:
+            type: integer
+          description: Last message date
+          required: true
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          description: Last message date
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelegramMessage'
+  /link/telegram/{user-id}:
+    put:
+      tags:
+        - "Linking and confirmation"
+      summary: 'Send telegram confirmation code'
+      description: >
+        Sends telegram confirmation code. Returns telegramConfirmationCode structure with filled <b>key</b> field.
+        This structure is intended to be filled with confirmation code and PUT to
+        <b>/link/telegram/{user-id}/confirm</b> endpoint.
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/TelegramSession'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelegramConfirmationCode'
+  /link/telegram/{user-id}/confirm:
+    put:
+      tags:
+        - "Linking and confirmation"
+      summary: 'Confirm received verification code'
+      description: 'Confirm received verification code.'
+      parameters:
+        - in: path
+          name: user-id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: UUID of the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramConfirmationCode'
+      responses:
+        '200':
+          description: OK
+security:
+  - cookieTokenAuth: []
+components:
+  schemas:
+    Credentials:
+      type: string
+      format: byte
+      example: c29zaSBoeWkgYmlkbG8gZWJhbm9l
+      description: Base64 of SHA256(email:password)
+    NewUser:
+      type: object
+      required:
+        - email
+        - credentials
+      properties:
+        email:
+          type: string
+          format: email
+        credentials:
+          $ref: '#/components/schemas/Credentials'
+      description: New user to be registered
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+    AuthenticatedUser:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          format: uuid
+          description: Also stored in cookies and used as public key to validate signature
+        secret:
+          type: string
+          format: uuid
+          description: Should be saved locally to be used as salt for request signature
+    ChannelGroup:
+      type: object
+      required:
+        - group_id
+        - group_name
+        - channel_ids
+      properties:
+        group_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        group_name:
+          type: string
+        group_descr:
+          type: string
+        channel_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+        tags:
+          type: array
+          items:
+            type: string
+        order:
+          type: integer
+        category_id:
+          type: string
+          format: uuid
+    GroupCategory:
+      type: object
+      required:
+        - category_id
+        - category_name
+      properties:
+        category_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        category_name:
+          type: string
+        category_descr:
+          type: string
+        order:
+          type: integer
+        favorite:
+          type: boolean
+    TelegramChannel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        photo:
+          type: string
+          format: uri
+        from_session:
+          $ref: '#/components/schemas/TelegramSession'
+    TelegramSession:
+      type: object
+      properties:
+        phone:
+          type: string
+          example: '+79169657295'
+    TelegramMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        channel:
+          $ref: '#/components/schemas/TelegramChannel'
+        from_name:
+          type: string
+          description: Title of a source channel if the message was forwarded
+        date:
+          type: integer
+          format: int64
+        message:
+          type: string
+          example: "U gay"
+        attached:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: '!!! NOT IMPLEMENTED; TBD !!!'
+        ttl_period:
+          type: integer
+          format: int64
+          description: >
+            Time To Live of the message, once message.date+message.ttl_period === time(), the message
+            will be deleted on the server, and must be deleted locally as well.
+    TelegramConfirmationCode:
+      type: object
+      properties:
+        phone_code:
+          type: string
+          example: 57432
+        key:
+          type: string
+          format: uuid
+
+  securitySchemes:
+    cookieTokenAuth:
+      type: apiKey
+      in: cookie
+      name: Token

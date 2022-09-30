@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+
+#--------------------ACCOUNT SERVICE SECTION------------------------------
+  account-service-db:
+    image: postgres:14.4-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "8091:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+  account-service-redis:
+    image: redis:7.0-alpine
+    restart: always
+    ports:
+      - '8092:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+  account-service:
+    image: board-account-service:latest
+    restart: always
+    env_file: ENV/account-service.env
+    depends_on:
+      - account-service-db
+      - account-service-redis
+    ports:
+      - '8093:9000'
+#--------------------ACCOUNT SERVICE SECTION------------------------------
+
+#--------------------API SECTION------------------------------
+  api:
+    image: board-api:latest
+    restart: always
+    env_file: ENV/api.env
+    ports:
+      - '9080:9010'
+#--------------------API SECTION------------------------------
+
+#--------------------SWAGGER SECTION------------------------------
+  swagger:
+    image: swaggerapi/swagger-ui
+    restart: always
+    env_file: ENV/swagger.env
+    volumes:
+      - ./swagger/schema.yaml:/schema.yaml
+    ports:
+      - '8000:8080'
+#--------------------SWAGGER SECTION------------------------------
+
+
+volumes:
+  db:
+    driver: local
+  cache:
+    driver: local
+  swagger:
+    driver: local

@@ -1,0 +1,165 @@
+{
+	"RegAuthResponse": {
+		"user": {
+			"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"email": "user@example.com"
+		},
+		"token": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+		"secret": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+	},
+	"ChannelListUserIdGetResponse": {
+		"channels": [
+			{
+				"id": 172845,
+				"title": "NuhaiBebru",
+				"photo": "https://test.com/fgsd",
+				"from_session": {
+					"phone": "+79169353764"
+				}
+			},
+			{
+				"id": 123456,
+				"title": "JopaJopa",
+				"photo": "https://test.com/sdfgdhfghsdfg",
+				"from_session": {
+					"phone": "+79169353254"
+				}
+			},
+			{
+				"id": 567843,
+				"title": "AnimeDlyaPidorov",
+				"photo": "https://test.com/teratareghbdfsdafcv",
+				"from_session": {
+					"phone": "+79169357890"
+				}
+			}
+		]
+	},
+	"MessagesGroupGroupIdGetResponse": {
+		"messages": [
+			{
+				"id": 2,
+				"channel": {
+					"id": 172845,
+					"title": "string",
+					"photo": "https://test.com/teratareghbdfsdafcv",
+					"from_session": {
+						"phone": "+79169657295"
+					}
+				},
+				"from_name": "string",
+				"date": 1663930800050,
+				"message": "U gay",
+				"attached": ["string"],
+				"ttl_period": 0
+			},
+			{
+				"id": 214,
+				"channel": {
+					"id": 123456,
+					"title": "string",
+					"photo": "https://test.com/teratareghbdfsdafcv",
+					"from_session": {
+						"phone": "+79169657295"
+					}
+				},
+				"from_name": "string",
+				"date": 1663930800011,
+				"message": "U gay",
+				"attached": ["string"],
+				"ttl_period": 0
+			},
+			{
+				"id": 4523,
+				"channel": {
+					"id": 567843,
+					"title": "string",
+					"photo": "https://test.com/teratareghbdfsdafcv",
+					"from_session": {
+						"phone": "+79169657295"
+					}
+				},
+				"from_name": "string",
+				"date": 1663930800079,
+				"message": "U gay",
+				"attached": ["string"],
+				"ttl_period": 0
+			}
+		]
+	},
+	"LinkTelegramUserIdPutResponse": {
+		"telegramConfirmationCode": {
+			"phone_code": "57432",
+			"key": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+		}
+	},
+	"LinkTelegramUserIdConfirmPutResponse": {},
+	"GroupListUserIdCategoryCategoryIdPutResponse": {
+		"groupCategory": {
+			"category_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"category_name": "string",
+			"category_descr": "string",
+			"order": 0,
+			"favorite": true
+		}
+	},
+	"GroupListUserIdCategoryPostResponse": {
+		"groupCategory": {
+			"category_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"category_name": "string",
+			"category_descr": "string",
+			"order": 0,
+			"favorite": true
+		}
+	},
+	"GroupListUserIdGetResponse": {
+		"channelGroups": [
+			{
+				"group_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"group_name": "string",
+				"group_descr": "string",
+				"channel_ids": [0],
+				"tags": ["string"],
+				"order": 0,
+				"category_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+			}
+		],
+		"groupCategories": [
+			{
+				"category_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"category_name": "string",
+				"category_descr": "string",
+				"order": 0,
+				"favorite": true
+			}
+		]
+	},
+	"GroupListUserIdGroupGroupIdPutResponse": {
+		"channelGroup": {
+			"group_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"group_name": "string",
+			"group_descr": "string",
+			"channel_ids": [0],
+			"tags": ["string"],
+			"order": 0,
+			"category_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+		}
+	},
+	"GroupListUserIdGroupPostResponse": {
+		"channelGroup": {
+			"group_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"group_name": "string",
+			"group_descr": "string",
+			"channel_ids": [0],
+			"tags": ["string"],
+			"order": 0,
+			"category_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+		}
+	}
+}
